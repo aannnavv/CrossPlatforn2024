@@ -1,3 +1,24 @@
+        import java.lang.reflect.*;
+
+public class ClassAnalyzer {
+
+    public static String getClassDescription(String className) throws ClassNotFoundException {
+        Class<?> clazz = Class.forName(className);
+        return getClassDescription(clazz);
+    }
+
+    public static String getClassDescription(Class<?> clazz) {
+        StringBuilder result = new StringBuilder();
+
+        // Package name
+        result.append("Package: ").append(clazz.getPackage().getName()).append("\n");
+
+        // Modifiers and class name
+        result.append("Modifiers: ").append(Modifier.toString(clazz.getModifiers())).append("\n");
+        result.append("Class Name: ").append(clazz.getSimpleName()).append("\n");
+
+        // Superclass
+        Class<?> superclass = clazz.getSuperclass();
         result.append("Superclass: ").append(superclass != null ? superclass.getSimpleName() : "None").append("\n");
 
         // Implemented interfaces
