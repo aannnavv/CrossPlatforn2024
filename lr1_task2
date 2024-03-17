@@ -1,0 +1,119 @@
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Scanner;
+
+public class ObjectInspector {
+
+    public static void inspectObject(Object obj) {
+        // Get the class of the object
+        Class<?> clazz = obj.getClass();
+
+        // Print real type and state of the object
+        System.out.println("Real Type: " + clazz.getName());
+        System.out.println("State:");
+
+        // Print fields and their values
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                System.out.println("  " + field.getType().getSimpleName() + " " + field.getName() +
+                        " = " + field.get(obj));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Print methods
+        Method[] methods = clazz.getDeclaredMethods();
+        System.out.println("Methods:");
+        int methodIndex = 1;
+        for (Method method : methods) {
+            if (method.getParameterCount() == 0) {
+                System.out.println("  " + methodIndex + "). " + method);
+                methodIndex++;
+            }
+        }
+    }
+
+    public static void invokeMethod(Object obj, int methodIndex) {
+        try {
+            // Get the class of the object
+            Class<?> clazz = obj.getClass();
+
+            // Get methods
+            Method[] methods = clazz.getDeclaredMethods();
+            Method selectedMethod = null;
+            int currentIndex = 1;
+
+            // Find the selected method
+            for (Method method : methods) {
+                if (method.getParameterCount() == 0) {
+                    if (currentIndex == methodIndex) {
+                        selectedMethod = method;
+                        break;
+                    }
+                    currentIndex++;
+                }
+            }
+
+            if (selectedMethod != null) {
+                // Invoke the selected method
+                Object result = selectedMethod.invoke(obj);
+
+                // Print the result
+                System.out.println("Result of method call: " + result);
+            } else {
+                System.out.println("Invalid method index.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        // Example usage
+        Scanner scanner = new Scanner(System.in);
+
+        // Create an object for inspection (replace with your own object)
+        Check checkObject = new Check();
+        System.out.println("Object created...");
+
+        // Inspect the object
+        inspectObject(checkObject);
+
+        // Allow the user to invoke methods
+        System.out.println("\nChoose a method to invoke (enter the corresponding number):");
+        int methodIndex = scanner.nextInt();
+        invokeMethod(checkObject, methodIndex);
+
+        scanner.close();
+    }
+}
+
+class Check {
+    private double x = 3.0;
+    private double y = 4.0;
+
+    public double Dist() {
+        return Math.sqrt(x * x + y * y);
+    }
+
+    public void setRandomData() {
+        x = Math.random();
+        y = Math.random();
+    }
+
+    public String toString() {
+        return "Check [x=" + x + ", y=" + y + "]";
+    }
+
+    public void setData(double newX, double newY) {
+        x = newX;
+        y = newY;
+    }
+
+    public static void main(String[] args) {
+        // Example main method
+    }
+}

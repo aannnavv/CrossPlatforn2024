@@ -1,0 +1,80 @@
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+
+public class MethodInvocation {
+
+    public static void invokeMethod(Object obj, String methodName, Object... parameters) throws FunctionNotFoundException {
+        try {
+            // Get the class of the object
+            Class<?> clazz = obj.getClass();
+
+            // Find the method by name
+            Method selectedMethod = null;
+
+            for (Method method : clazz.getDeclaredMethods()) {
+                if (method.getName().equals(methodName) && method.getParameterCount() == parameters.length) {
+                    Parameter[] methodParameters = method.getParameters();
+                    boolean match = true;
+
+                    for (int i = 0; i < parameters.length; i++) {
+                        if (!methodParameters[i].getType().isAssignableFrom(parameters[i].getClass())) {
+                            match = false;
+                            break;
+                        }
+                    }
+
+                    if (match) {
+                        selectedMethod = method;
+                        break;
+                    }
+                }
+            }
+
+            if (selectedMethod != null) {
+                // Invoke the selected method
+                Object result = selectedMethod.invoke(obj, parameters);
+
+                // Print the result
+                System.out.println("Result: " + result);
+            } else {
+                throw new FunctionNotFoundException("Method not found or unable to invoke.", null);
+            }
+
+        } catch (Exception e) {
+            throw new FunctionNotFoundException("Method not found or unable to invoke.", e);
+        }
+    }
+
+    public static void main(String[] args) {
+        // Example usage
+        TestClass testObject = new TestClass();
+
+        try {
+            // Call the method "evaluate" with parameters 1.0
+            invokeMethod(testObject, "evaluate", 1.0);
+
+            // Call the overloaded method "evaluate" with parameters 1.0 and 1
+            invokeMethod(testObject, "evaluate", 1.0, 1);
+        } catch (FunctionNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class TestClass {
+    public double evaluate(double a) {
+        System.out.println("TestClass [a=" + a + ", exp(-abs(a)*x)*sin(x)]");
+        return Math.exp(-Math.abs(a)) * Math.sin(a);
+    }
+
+    public double evaluate(double a, int x) {
+        System.out.println("Types: [double, int], values: [" + a + ", " + x + "]");
+        return Math.exp(-Math.abs(a * x)) * Math.sin(x);
+    }
+}
+
+class FunctionNotFoundException extends Exception {
+    public FunctionNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}

@@ -1,0 +1,55 @@
+        result.append("Superclass: ").append(superclass != null ? superclass.getSimpleName() : "None").append("\n");
+
+        // Implemented interfaces
+        Class<?>[] interfaces = clazz.getInterfaces();
+        result.append("Implemented Interfaces: ");
+        if (interfaces.length > 0) {
+            for (Class<?> iface : interfaces) {
+                result.append(iface.getSimpleName()).append(", ");
+            }
+            result.delete(result.length() - 2, result.length()); // Remove trailing comma and space
+        } else {
+            result.append("None");
+        }
+        result.append("\n");
+
+        // Fields
+        Field[] fields = clazz.getDeclaredFields();
+        result.append("Fields:\n");
+        for (Field field : fields) {
+            result.append("  ").append(Modifier.toString(field.getModifiers()))
+                    .append(" ").append(field.getType().getSimpleName())
+                    .append(" ").append(field.getName()).append("\n");
+        }
+
+        // Constructors
+        Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+        result.append("Constructors:\n");
+        for (Constructor<?> constructor : constructors) {
+            result.append("  ").append(Modifier.toString(constructor.getModifiers()))
+                    .append(" ").append(constructor.getName()).append("\n");
+        }
+
+        // Methods
+        Method[] methods = clazz.getDeclaredMethods();
+        result.append("Methods:\n");
+        for (Method method : methods) {
+            result.append("  ").append(Modifier.toString(method.getModifiers()))
+                    .append(" ").append(method.getReturnType().getSimpleName())
+                    .append(" ").append(method.getName()).append("\n");
+        }
+
+        return result.toString();
+    }
+
+    public static void main(String[] args) {
+        // Example usage
+        try {
+            String className = "java.lang.String";
+            String classDescription = getClassDescription(className);
+            System.out.println(classDescription);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+}

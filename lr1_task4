@@ -1,0 +1,102 @@
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class ArrayMatrixManipulation {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Оберіть тип даних (1 - примітивний, 2 - посилання):");
+        int dataTypeChoice = scanner.nextInt();
+
+        if (dataTypeChoice == 1) {
+            // Примітивний тип даних
+            manipulatePrimitiveArray();
+        } else if (dataTypeChoice == 2) {
+            // Тип посилання
+            manipulateReferenceArray();
+        } else {
+            System.out.println("Некоректний вибір типу даних.");
+        }
+
+        scanner.close();
+    }
+
+    private static void manipulatePrimitiveArray() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Введіть розмірність масиву:");
+        int size = scanner.nextInt();
+
+        // Створення примітивного масиву
+        int[] array = new int[size];
+
+        // Заповнення масиву
+        for (int i = 0; i < size; i++) {
+            System.out.println("Введіть значення для елементу " + i + ":");
+            array[i] = scanner.nextInt();
+        }
+
+        // Виведення масиву
+        System.out.println("Масив: " + Arrays.toString(array));
+
+        // Зміна розміру масиву
+        System.out.println("Введіть новий розмір масиву:");
+        int newSize = scanner.nextInt();
+        array = Arrays.copyOf(array, newSize);
+
+        // Виведення зміненого масиву
+        System.out.println("Змінений масив: " + Arrays.toString(array));
+
+        scanner.close();
+    }
+
+    private static void manipulateReferenceArray() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Введіть кількість рядків матриці:");
+        int rows = scanner.nextInt();
+
+        System.out.println("Введіть кількість стовпців матриці:");
+        int cols = scanner.nextInt();
+
+        // Створення матриці з посилань
+        String[][] matrix = new String[rows][cols];
+
+        // Заповнення матриці
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                System.out.println("Введіть значення для елементу [" + i + "][" + j + "]:");
+                matrix[i][j] = scanner.next();
+            }
+        }
+
+        // Виведення матриці
+        System.out.println("Матриця: ");
+        printMatrix(matrix);
+
+        // Зміна розмірів матриці
+        System.out.println("Введіть нову кількість рядків для матриці:");
+        int newRows = scanner.nextInt();
+
+        System.out.println("Введіть нову кількість стовпців для матриці:");
+        int newCols = scanner.nextInt();
+
+        matrix = Arrays.copyOf(matrix, newRows);
+        for (int i = 0; i < newRows; i++) {
+            matrix[i] = Arrays.copyOf(matrix[i], newCols);
+        }
+
+        // Виведення зміненої матриці
+        System.out.println("Змінена матриця: ");
+        printMatrix(matrix);
+
+        scanner.close();
+    }
+
+    private static void printMatrix(String[][] matrix) {
+        for (String[] row : matrix) {
+            System.out.println(Arrays.toString(row));
+        }
+    }
+}
